@@ -1,5 +1,5 @@
 export const mapState = state => {
-  return {};
+  return {pokemons: state.ownedPokemon.pokemons};
 };
 
 export const mapDispatch = dispatch => {

@@ -5,7 +5,6 @@ import { CATCH_POKEMON, RELEASE_POKEMON } from '../type/type.ownedPoke';
 
 const initialState = {
   loading: true,
-  selectedPokemons: {},
   message: null,
   pokemons: [],
 };

@@ -16,6 +16,7 @@ const initialState = {
   url: 'https://pokeapi.co/api/v2/pokemon', 
   nextUrl: null,
   prevUrl: null,
+  currentPage: 1
 };
 
 export default (state = initialState, action) => {

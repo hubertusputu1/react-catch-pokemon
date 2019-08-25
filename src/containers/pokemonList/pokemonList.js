@@ -11,15 +11,26 @@ import {
   useScrollTrigger,
   Slide,
   Button,
+  TextField,
+  MenuItem,
+  Menu,
 } from '@material-ui/core';
-import { Menu, NavigateBefore, NavigateNext } from '@material-ui/icons';
+import { MoreVert, NavigateBefore, NavigateNext } from '@material-ui/icons';
 
 import { mapDispatch, mapState } from './pokemonList.controller';
 import PokemonItem from './pokemonItem';
 
+const ITEM_HEIGHT = 48;
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 50,
+    color: 'primary',
   },
   bottomAppBar: {
     top: 'auto',
@@ -46,6 +57,11 @@ const styles = theme => ({
   paper: {
     paddingTop: 50,
     paddingBottom: 50,
+  },
+  optionsPage: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    color: 'white',
   },
 });
 
@@ -79,8 +95,26 @@ class PokemonList extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      currentPage: props.currentPage,
+      open: false,
+      anchorEl: null,
+    };
   }
+
+  handleClick = event => {
+    this.setState({ open: true, anchorEl: event.currentTarget });
+  };
+
+  handleClose = url => {
+    this.setState({ open: false, anchorEl: null }, () => {
+      if (url) this.props.history.push(url);
+    });
+  };
+
+  handleChange = name => event => {
+    this.setState({ ...this.state, [name]: event.target.value });
+  };
 
   fetchPokemonList = isNext => {
     const { fetchPokemons, nextUrl, prevUrl } = this.props;
@@ -118,8 +152,9 @@ class PokemonList extends Component {
               className={classes.menuButton}
               color="inherit"
               aria-label="open drawer"
+              onClick={e => this.handleClick(e)}
             >
-              <Menu />
+              <MoreVert />
             </IconButton>
             <Typography className={classes.title} variant="h6" noWrap>
               Pokemon List
@@ -130,13 +165,64 @@ class PokemonList extends Component {
     );
   };
 
-  renderBottomAppBar = classes => {
+  renderNavOptions = () => {
+    const { open, anchorEl } = this.state;
+    return (
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={open}
+        PaperProps={{
+          style: {
+            maxHeight: ITEM_HEIGHT * 4.5,
+            width: 200,
+          },
+        }}
+        onClose={() => this.handleClose()}
+      >
+        <MenuItem selected onClick={() => this.handleClose(null)}>
+          Pokemon List
+        </MenuItem>
+        <MenuItem onClick={() => this.handleClose('/my-pokemon')}>
+          My Pokemon
+        </MenuItem>
+      </Menu>
+    );
+  };
+
+  renderBottomAppBar = (classes, total) => {
+    const totalPage = Math.ceil(total / 20);
+    const pageOptions = () => {
+      let options = [];
+      for (let i = 1; i <= totalPage; i++) {
+        options.push(
+          <MenuItem key={i} value={i}>
+            {i}
+          </MenuItem>
+        );
+      }
+      return options;
+    };
+
     return (
       <AppBar position="fixed" color="primary" className={classes.bottomAppBar}>
         <Toolbar className={classes.bottomToolbar}>
           <Button color="inherit" onClick={() => this.fetchPokemonList(false)}>
             <NavigateBefore />
           </Button>
+          <div className={classes.optionsPage}>
+            <TextField
+              id="page-number"
+              select
+              className={classes.textField}
+              value={this.state.currentPage}
+              onChange={this.handleChange('currentPage')}
+              margin="normal"
+            >
+              {pageOptions()}
+            </TextField>
+          </div>
           <Button color="inherit" onClick={() => this.fetchPokemonList(true)}>
             <NavigateNext />
           </Button>
@@ -146,11 +232,11 @@ class PokemonList extends Component {
   };
 
   render() {
-    const { classes, pokemons, loading } = this.props;
-
+    const { classes, pokemons, loading, total } = this.props;
     return (
       <div className={classes.root}>
         {this.renderTopAppBar(classes)}
+        {this.renderNavOptions()}
         <Paper square className={classes.paper}>
           {loading
             ? this.renderLoader()
@@ -158,7 +244,7 @@ class PokemonList extends Component {
                 <PokemonItem pokemon={pokemon} key={pokemon.name} />
               ))}
         </Paper>
-        {this.renderBottomAppBar(classes)}
+        {this.renderBottomAppBar(classes, total)}
       </div>
     );
   }

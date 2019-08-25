@@ -8,7 +8,8 @@ export const mapState = state => {
     total: state.pokemon.total,
     loading: state.pokemon.loading,
     message: state.pokemon.message,
-    url: state.pokemon.url
+    url: state.pokemon.url,
+    currentPage: state.pokemon.currentPage,
   };
 };
 
