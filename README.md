@@ -1,25 +1,4 @@
-# Task Management System Frontend
-
-features of this web:
-
-- User Sign Up
-- User Login
-- CRUD Task
-- CRUD Comment
-- Assign Task to User
-- Update Status of Task
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Backend
-
-backend available on [task management system backend](https://github.com/hubertusputu1/task-management-system-backend).
-
-## How To Run
-
-First of all, you need to rename the `sample.env` to `.env`.
-
-In the project directory, you can run:
+# React Catch Pokemons
 
 ### `yarn start`
 
