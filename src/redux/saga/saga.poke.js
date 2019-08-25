@@ -9,12 +9,18 @@ import {
 
 import { fetchPokemons, fetchSinglePokemon } from './api/api.poke';
 
-export function* fetchPokemons(action) {
+export function* sagaFetchPokemons(action) {
   try {
-    const pokemons = yield call(fetchPokemons, action.payload);
+    const apiResult = yield call(fetchPokemons, action.payload);
     yield put({
       type: FETCH_POKEMON_SUCCESS,
-      payload: { pokemons: pokemons.results },
+      payload: {
+        pokemons: apiResult.results,
+        nextUrl: apiResult.next,
+        prevUrl: apiResult.previous,
+        total: apiResult.count,
+        url: action.payload.url
+      },
     });
   } catch (error) {
     yield put({
@@ -24,7 +30,7 @@ export function* fetchPokemons(action) {
   }
 }
 
-export function* fetchSinglePokemon(action) {
+export function* sagaFetchSinglePokemon(action) {
   try {
     const pokemon = yield call(fetchSinglePokemon, action.payload);
     yield put({

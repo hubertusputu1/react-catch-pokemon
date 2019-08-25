@@ -14,9 +14,9 @@ import MyPokemon from './containers/myPokemon';
 import NotFoundPage from './containers/notFoundPage';
 
 const theme = createMuiTheme({
-  palette: {
-    type: 'dark',
-  },
+  // palette: {
+  //   type: 'dark',
+  // },
   typography: { useNextVariants: true },
 });
 

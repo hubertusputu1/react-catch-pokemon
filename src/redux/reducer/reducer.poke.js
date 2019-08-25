@@ -10,8 +10,10 @@ import {
 const initialState = {
   loading: true,
   message: null,
+  total: 0,
   pokemons: [],
   selectedPokemon: {},
+  url: 'https://pokeapi.co/api/v2/pokemon', 
   nextUrl: null,
   prevUrl: null,
 };
@@ -22,6 +24,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: true,
+        message: '',
       };
     case FETCH_POKEMON_SUCCESS:
       return {
@@ -29,6 +32,10 @@ export default (state = initialState, action) => {
         loading: false,
         message: 'Pokemons Loaded',
         pokemons: action.payload.pokemons,
+        nextUrl: action.payload.nextUrl,
+        prevUrl: action.payload.prevUrl,
+        url: action.payload.url,
+        total: action.payload.total,
       };
     case FETCH_POKEMON_FAILED:
       return {

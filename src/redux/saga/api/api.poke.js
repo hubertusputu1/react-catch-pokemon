@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 export const fetchPokemons = payload => {
-  const { query } = payload;
+  const { url } = payload;
   return axios
-    .get(`https://pokeapi.co/api/v2/pokemon?${query}`)
+    .get(url)
     .then(res => res.data);
 };
 
@@ -13,5 +13,3 @@ export const fetchSinglePokemon = payload => {
     .get(`https://pokeapi.co/api/v2/pokemon/${name}`)
     .then(res => res.data);
 };
-
-
