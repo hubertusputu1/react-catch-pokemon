@@ -2,9 +2,7 @@ import axios from 'axios';
 
 export const fetchPokemons = payload => {
   const { url } = payload;
-  return axios
-    .get(url)
-    .then(res => res.data);
+  return axios.get(url).then(res => res.data);
 };
 
 export const fetchSinglePokemon = payload => {

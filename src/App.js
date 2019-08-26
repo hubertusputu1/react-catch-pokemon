@@ -50,7 +50,7 @@ class App extends Component {
               />
               <Route
                 exact
-                path="/detail/:id"
+                path="/detail/:name"
                 render={props => this.renderPokemonDetail(props)}
               />
               <Route

@@ -19,7 +19,7 @@ export function* sagaFetchPokemons(action) {
         nextUrl: apiResult.next,
         prevUrl: apiResult.previous,
         total: apiResult.count,
-        url: action.payload.url
+        url: action.payload.url,
       },
     });
   } catch (error) {

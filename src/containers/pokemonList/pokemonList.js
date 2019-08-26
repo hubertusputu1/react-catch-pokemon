@@ -232,7 +232,7 @@ class PokemonList extends Component {
   };
 
   render() {
-    const { classes, pokemons, loading, total } = this.props;
+    const { classes, pokemons, loading, total, history } = this.props;
     return (
       <div className={classes.root}>
         {this.renderTopAppBar(classes)}
@@ -241,7 +241,11 @@ class PokemonList extends Component {
           {loading
             ? this.renderLoader()
             : pokemons.map(pokemon => (
-                <PokemonItem pokemon={pokemon} key={pokemon.name} />
+                <PokemonItem
+                  pokemon={pokemon}
+                  key={pokemon.name}
+                  history={history}
+                />
               ))}
         </Paper>
         {this.renderBottomAppBar(classes, total)}

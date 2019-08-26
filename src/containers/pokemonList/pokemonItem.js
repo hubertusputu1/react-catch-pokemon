@@ -33,20 +33,27 @@ class PokemonList extends Component {
     this.state = {};
   }
 
+  goToPokemonDetail = name => {
+    const { history } = this.props;
+    history.push(`/detail/${name}`);
+  };
+
   render() {
     const { classes, pokemon } = this.props;
 
     return (
-      <Card className={classes.card}>
+      <Card
+        className={classes.card}
+        onClick={() => {
+          this.goToPokemonDetail(pokemon.name);
+        }}
+      >
         <CardContent>
-          <Typography
-            className={classes.title}
-            variant="h6"
-          >
+          <Typography className={classes.title} variant="h6">
             {pokemon.name}
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
-            owned : 0
+            owned : 0 hardcoded
           </Typography>
         </CardContent>
       </Card>
