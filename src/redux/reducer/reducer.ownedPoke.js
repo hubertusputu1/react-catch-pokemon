@@ -1,7 +1,11 @@
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
 
-import { CATCH_POKEMON, RELEASE_POKEMON } from '../type/type.ownedPoke';
+import {
+  CATCH_POKEMON,
+  RELEASE_POKEMON,
+  RELEASE_ALL_POKEMON,
+} from '../type/type.ownedPoke';
 
 const initialState = {
   loading: true,
@@ -28,6 +32,12 @@ export default persistReducer(persistConfig, (state = initialState, action) => {
         ...state,
         message: 'pokemon released',
         pokemons: action.payload.pokemons,
+      };
+    case RELEASE_ALL_POKEMON:
+      return {
+        ...state,
+        message: 'all pokemon released',
+        pokemons: [],
       };
     default:
       return state;

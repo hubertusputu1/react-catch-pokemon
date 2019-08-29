@@ -211,18 +211,20 @@ class PokemonList extends Component {
           <Button color="inherit" onClick={() => this.fetchPokemonList(false)}>
             <NavigateBefore />
           </Button>
-          <div className={classes.optionsPage}>
-            <TextField
-              id="page-number"
-              select
-              className={classes.textField}
-              value={this.state.currentPage}
-              onChange={this.handleChange('currentPage')}
-              margin="normal"
-            >
-              {pageOptions()}
-            </TextField>
-          </div>
+          {
+            //   <div className={classes.optionsPage}>
+            //   <TextField
+            //     id="page-number"
+            //     select
+            //     className={classes.textField}
+            //     value={this.state.currentPage}
+            //     onChange={this.handleChange('currentPage')}
+            //     margin="normal"
+            //   >
+            //     {pageOptions()}
+            //   </TextField>
+            // </div>
+          }
           <Button color="inherit" onClick={() => this.fetchPokemonList(true)}>
             <NavigateNext />
           </Button>

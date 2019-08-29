@@ -37,7 +37,14 @@ class PokemonList extends Component {
   };
 
   render() {
-    const { classes, pokemon } = this.props;
+    const { classes, pokemon, ownedPokemons } = this.props;
+    let totalOwned =
+      ownedPokemons.length > 0
+        ? ownedPokemons.filter(poke => {
+            return poke.name === pokemon.name ? true : false;
+          })
+        : 0;
+    totalOwned = totalOwned.length > 0 ? totalOwned[0].owns.length : 0;
 
     return (
       <Card
@@ -51,7 +58,7 @@ class PokemonList extends Component {
             {pokemon.name}
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
-            owned : 0 hardcoded
+            owned : {totalOwned}
           </Typography>
         </CardContent>
       </Card>
