@@ -9,8 +9,6 @@ import {
   Paper,
   useScrollTrigger,
   Slide,
-  Button,
-  TextField,
   MenuItem,
   Menu,
 } from '@material-ui/core';

@@ -9,15 +9,16 @@ import {
   IconButton,
   Typography,
   Card,
-  CardActionArea,
+  TextField,
   CardContent,
   useScrollTrigger,
   Slide,
   Button,
   Avatar,
   Paper,
+  Snackbar,
 } from '@material-ui/core';
-import { MoreVert, NavigateBefore, NavigateNext } from '@material-ui/icons';
+import { NavigateBefore } from '@material-ui/icons';
 
 import { mapDispatch, mapState } from './pokemonDetail.controller';
 
@@ -28,8 +29,7 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 50,
-    color: 'primary',
+    width: '100%',
   },
   bottomAppBar: {
     top: 'auto',
@@ -106,6 +106,9 @@ class PokemonDetail extends Component {
 
     this.state = {
       isCaught: false,
+      open: false,
+      nickName: '',
+      message: 'Oooooppssss. Pokemon broke the pokeball!',
     };
   }
 
@@ -136,7 +139,7 @@ class PokemonDetail extends Component {
     );
   };
 
-  renderTopAppBar = (classes, pokemonName) => {
+  renderTopAppBar = (classes, pokemonName, isCaught) => {
     return (
       <HideOnScroll {...this.props}>
         <AppBar>
@@ -146,6 +149,7 @@ class PokemonDetail extends Component {
               className={classes.menuButton}
               color="inherit"
               aria-label="back"
+              disabled={isCaught ? true : false}
               onClick={e => this.handleClick(e)}
             >
               <NavigateBefore />
@@ -159,17 +163,80 @@ class PokemonDetail extends Component {
     );
   };
 
-  throwPokeBall = () => {
-    console.log('throwing pokeball');
+  getRandomInt = max => {
+    return Math.floor(Math.random() * Math.floor(max));
   };
 
-  renderBottomAppBar = classes => {
+  throwPokeBall = () => {
+    if (this.state.open) return;
+    this.setState({ open: true });
+    if (this.getRandomInt(2) === 1) {
+      this.setState({
+        isCaught: true,
+        message: 'Gotcha! You caught the Pokemon!',
+      });
+    }
+    setTimeout(() => {
+      this.setState({ open: false });
+    }, 2000);
+  };
+
+  savePokemon = () => {
+    const { catchPokemon, selectedPokemon, ownedPokemons } = this.props;
+    const { nickName } = this.state;
+    const { name } = selectedPokemon;
+
+    let foundPokemon =
+      ownedPokemons.length > 0
+        ? ownedPokemons.filter(poke => {
+            if (poke.name === name) {
+              let owned = poke.owns.filter(own => {
+                return own === nickName ? true : false;
+              });
+              if (owned.length > 0) {
+                return true;
+              } else {
+                return false;
+              }
+            } else {
+              return false;
+            }
+          })
+        : false;
+
+    if (foundPokemon.length > 0) {
+      this.setState({ open: true, message: 'That Nickname already exist!' });
+      setTimeout(() => {
+        this.setState({ open: false });
+      }, 2000);
+    } else {
+      let newPokemons =
+        ownedPokemons.length > 0
+          ? ownedPokemons.map(poke => {
+              if (poke.name === name) {
+                poke.owns.push(nickName);
+              }
+              return poke;
+            })
+          : [{ name, owns: [nickName] }];
+      catchPokemon({ pokemons: newPokemons });
+      this.props.history.push('/');
+    }
+  };
+
+  renderBottomAppBar = (classes, isCaught) => {
     return (
       <AppBar position="fixed" color="primary" className={classes.bottomAppBar}>
         <Toolbar className={classes.bottomToolbar}>
-          <Button color="inherit" onClick={() => this.throwPokeBall()}>
-            Throw a Pokeball
-          </Button>
+          {!isCaught ? (
+            <Button color="inherit" onClick={() => this.throwPokeBall()}>
+              Throw a Pokeball
+            </Button>
+          ) : (
+            <Button color="inherit" onClick={() => this.savePokemon()}>
+              Save Pokemon
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     );
@@ -191,78 +258,130 @@ class PokemonDetail extends Component {
         />
 
         <Card className={classes.card}>
-          <CardActionArea>
-            <CardContent>
+          <CardContent>
+            <Typography
+              variant="h5"
+              color="primary"
+              className={classes.titleDescription}
+            >
+              Types
+            </Typography>
+            {pokemon.types.map(type => (
               <Typography
-                variant="h5"
-                color="primary"
-                className={classes.titleDescription}
+                key={type.type.name}
+                style={{ fontSize: '1.7em' }}
+                variant="body2"
               >
-                Types
+                {type.type.name}
               </Typography>
-              {pokemon.types.map(type => (
-                <Typography
-                  key={type.type.name}
-                  style={{ fontSize: '1.7em' }}
-                  variant="body2"
-                >
-                  {type.type.name}
-                </Typography>
-              ))}
-            </CardContent>
-          </CardActionArea>
+            ))}
+          </CardContent>
         </Card>
 
         <Card className={classes.card}>
-          <CardActionArea>
-            <CardContent>
-              <Typography
-                variant="h5"
-                color="primary"
-                className={classes.titleDescription}
-              >
-                Abilities
-              </Typography>
+          <CardContent>
+            <Typography
+              variant="h5"
+              color="primary"
+              className={classes.titleDescription}
+            >
+              Abilities
+            </Typography>
 
-              {pokemon.abilities.map(abilities => (
-                <Typography
-                  key={abilities.ability.name}
-                  style={{ fontSize: '1.7em' }}
-                  variant="body2"
-                >
-                  {abilities.ability.name}
-                </Typography>
-              ))}
-            </CardContent>
-          </CardActionArea>
+            {pokemon.abilities.map(abilities => (
+              <Typography
+                key={abilities.ability.name}
+                style={{ fontSize: '1.7em' }}
+                variant="body2"
+              >
+                {abilities.ability.name}
+              </Typography>
+            ))}
+          </CardContent>
         </Card>
 
         <Card className={classes.card}>
-          <CardActionArea>
-            <CardContent>
-              <Typography
-                variant="h5"
-                color="primary"
-                className={classes.titleDescription}
-              >
-                Stats
-              </Typography>
+          <CardContent style={{ width: '100%' }}>
+            <Typography
+              variant="h5"
+              color="primary"
+              className={classes.titleDescription}
+            >
+              Stats
+            </Typography>
 
-              {pokemon.stats.map(stats => (
-                <div
-                  key={stats.stat.name}
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <Typography style={{ fontSize: '1.7em' }} variant="body2">
-                    {stats.stat.name}
-                  </Typography>
-                  <Typography style={{ fontSize: '1.5em' }} variant="body1">
-                    {stats.base_stat}
-                  </Typography>
-                </div>
-              ))}
-            </CardContent>
-          </CardActionArea>
+            {pokemon.stats.map(stats => (
+              <div
+                key={stats.stat.name}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Typography style={{ fontSize: '1.7em' }} variant="body2">
+                  {stats.stat.name}
+                </Typography>
+                <Typography style={{ fontSize: '1.5em' }} variant="body1">
+                  {stats.base_stat}
+                </Typography>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  renderSnackbar = () => {
+    const { open, message } = this.state;
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        key={`vertical: top, horizontal: center`}
+        open={open}
+        ContentProps={{
+          'aria-describedby': 'pokemon-catch',
+        }}
+        message={<span id="pokemon-catch">{message}</span>}
+      />
+    );
+  };
+
+  renderPokemonCaught = (classes, pokemon) => {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          paddingTop: 50,
+        }}
+      >
+        <Avatar
+          alt="pokemon sprite"
+          src={pokemon.sprites.front_default}
+          className={classes.bigAvatar}
+        />
+
+        <Card className={classes.card}>
+          <CardContent>
+            <Typography
+              variant="h5"
+              color="primary"
+              className={classes.titleDescription}
+            >
+              Give Your Pokemon a Nickname
+            </Typography>
+            <TextField
+              required
+              id="standard-required"
+              label="Nickname"
+              defaultValue={this.state.nickName}
+              className={classes.textField}
+              margin="normal"
+              onChange={e => this.setState({ nickName: e.target.value })}
+            />
+          </CardContent>
         </Card>
       </div>
     );
@@ -270,16 +389,22 @@ class PokemonDetail extends Component {
 
   render() {
     const { classes, loading, selectedPokemon } = this.props;
+    const { isCaught } = this.state;
     const { name } = this.props.match.params;
     return (
       <div className={classes.root}>
-        {this.renderTopAppBar(classes, name)}
-        <Paper square className={classes.paper}>
-          {loading
-            ? this.renderLoader()
-            : this.renderPokemonDetail(classes, selectedPokemon)}
-        </Paper>
-        {this.renderBottomAppBar(classes)}
+        {this.renderTopAppBar(classes, name, isCaught)}
+        {!isCaught ? (
+          <Paper square className={classes.paper}>
+            {loading || !selectedPokemon
+              ? this.renderLoader()
+              : this.renderPokemonDetail(classes, selectedPokemon)}
+          </Paper>
+        ) : (
+          this.renderPokemonCaught(classes, selectedPokemon)
+        )}
+        {this.renderSnackbar()}
+        {this.renderBottomAppBar(classes, isCaught)}
       </div>
     );
   }

@@ -20,13 +20,13 @@ export default persistReducer(persistConfig, (state = initialState, action) => {
     case CATCH_POKEMON:
       return {
         ...state,
-        loading: 'pokemon caught',
-        pokemons: state.pokemons.push(action.payload.pokemon),
+        message: 'pokemon caught',
+        pokemons: action.payload.pokemons,
       };
     case RELEASE_POKEMON:
       return {
         ...state,
-        loading: 'pokemon released',
+        message: 'pokemon released',
         pokemons: action.payload.pokemons,
       };
     default:
