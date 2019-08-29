@@ -8,7 +8,7 @@ import { catchPokemon } from '../../redux/action/action.ownedPoke';
 export const mapState = state => {
   return {
     selectedPokemon: state.pokemon.selectedPokemon,
-    loading: state.pokemon.loading,
+    loading: state.pokemon.SelectedPokemonLoading,
     message: state.pokemon.message,
     ownedPokemons: state.ownedPokemon.pokemons,
   };

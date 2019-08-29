@@ -10,6 +10,7 @@ import {
 
 const initialState = {
   loading: true,
+  SelectedPokemonLoading: true,
   message: null,
   total: 0,
   pokemons: [],
@@ -49,26 +50,27 @@ export default (state = initialState, action) => {
     case FETCH_SINGLE_POKEMON:
       return {
         ...state,
-        loading: true,
+        SelectedPokemonLoading: true,
         selectedPokemon: null,
       };
     case FETCH_SINGLE_POKEMON_SUCCESS:
       return {
         ...state,
-        loading: false,
+        SelectedPokemonLoading: false,
         selectedPokemon: action.payload.selectedPokemon,
         message: 'Pokemon Loaded',
       };
     case FETCH_SINGLE_POKEMON_FAILED:
       return {
         ...state,
-        loading: false,
+        SelectedPokemonLoading: false,
         message: 'Failed to load Pokemon',
       };
+
     case REMOVE_DETAIL_POKEMON:
       return {
         ...state,
-        loading: false,
+        SelectedPokemonLoading: false,
         message: 'selected pokemon is removed',
         selectedPokemon: null,
       };

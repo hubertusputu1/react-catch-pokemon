@@ -1,7 +1,6 @@
 import { fetchPokemons } from '../../redux/action/action.poke';
 
 export const mapState = state => {
-  console.log('ini state ', state);
   return {
     pokemons: state.pokemon.pokemons,
     nextUrl: state.pokemon.nextUrl,
